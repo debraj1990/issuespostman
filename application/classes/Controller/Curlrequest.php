@@ -33,18 +33,19 @@ class Controller_Curlrequest extends Controller_Base {
             }
             elseif($this->curl_post_datatype === 'urlparams'){
                 foreach($this->fields as $key=>$value) {
-                    $fields_string .= $key.'='.$value.'&';
+                    $fields_string .= $key.'='.urlencode($value).'&';
                 }
-                $fields_string = urlencode(rtrim($fields_string, '&'));
+                $fields_string = rtrim($fields_string, '&');
             }
-            $ch = curl_init($this->service_url);//$this->service_url
-//            curl_setopt($ch, CURLOPT_URL, $this->service_url."?".$fields_string);
-//            curl_setopt($ch, CURLOPT_VERBOSE, 1);
+            $ch = curl_init($this->service_url);
             //set the credential and header data
             if($this->curl_post_datatype === 'json'){
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json; charset=UTF-8;','Accept: application/json' ));
-            curl_setopt($ch, CURLOPT_USERAGENT, $this->user);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json; charset=UTF-8;','Accept: application/json' ));
             }
+            elseif($this->curl_post_datatype === 'urlparams'){
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded; charset=UTF-8;','Accept: application/json' ));
+            }
+            curl_setopt($ch, CURLOPT_USERAGENT, $this->user);
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
             curl_setopt($ch, CURLOPT_USERPWD, $this->user.":".$this->pwd); //Your credentials goes here
             //set the url, number of POST vars, POST data
@@ -58,8 +59,7 @@ class Controller_Curlrequest extends Controller_Base {
             //close connection
             curl_close($ch);
             $json=json_decode($result,true);
-//            echo 'fields_string:'; var_dump($this->service_url."?".$fields_string);
-            echo 'result'; var_dump($result);
+//            echo 'result'; var_dump($result);
             return $json;
         }
         catch(Exception $e)

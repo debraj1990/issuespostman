@@ -2,12 +2,12 @@
 
 class Controller_Github extends Controller_Curlrequest {
     public function action_index(){
-//         echo 'Github_index';var_dump($_SESSION);
+
 //        if(!empty($_SESSION['userRequestData']['url_provider']) && $_SESSION['userRequestData']['url_provider'] == 'github.com'){ echo 'hi';
             if(!empty($_SESSION['userRequestData']['url_username']) && !empty($_SESSION['userRequestData']['url_repository']))
                 $_SESSION['userRequestData']['issues_endpoint_github'] = 'https://api.github.com/repos/'.$_SESSION['userRequestData']['url_username'].'/'.$_SESSION['userRequestData']['url_repository'].'/issues';
 //            }
-//            echo 'github userRequestData:';var_dump($_SESSION);
+
             Request::factory("Github/curlassignment")->execute();
         }
 
@@ -22,8 +22,8 @@ class Controller_Github extends Controller_Curlrequest {
         $this->curl_post_datatype = 'json';
         $this->user = base64_decode($_SESSION['userRequestData']['username']);
         $this->pwd = base64_decode($_SESSION['userRequestData']['password']);
-//        echo 'github service_url:';var_dump($this->service_url);
-        $responsejson = $this->action_curlreq();//Request::factory("Curlrequest/curlreq")->execute();
+
+        $responsejson = $this->action_curlreq();
 //        echo 'responseData:'; print_r($responsejson);
         if(!empty($responsejson['message']) && !empty($responsejson['documentation_url'])){
             $this->result_content = "<span class='error'>Your issue could not be registered!!. ".$responsejson['message']."</span><br/>For more information, refer to ".Html::anchor($responsejson['documentation_url'], $responsejson['documentation_url'])."<br/>";//<a href='".$responsejson['documentation_url']."'>".$responsejson['documentation_url']."</a>";

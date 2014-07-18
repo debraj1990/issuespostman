@@ -27,13 +27,13 @@ class Controller_Form extends Controller_Base
                 Request::factory("Github/index")->execute();
             }
             else if(!empty($_SESSION['userRequestData']['url_provider']) && $_SESSION['userRequestData']['url_provider'] == 'bitbucket.org'){
-                echo 'in Bitbucket'; Request::factory("Bitbucket/index")->execute();
+                Request::factory("Bitbucket/index")->execute();
             }
             else if(!empty($_SESSION['userRequestData']['url_provider']) && $_SESSION['userRequestData']['url_provider'] !== 'github.com' && $_SESSION['userRequestData']['url_provider'] !== 'bitbucket.org'){
                 echo 'in Misc'; Request::factory("Misc/index")->execute();
             }
             else{
-//                $this->result_content = "<span class='error'>Not a valid url for repository versioning service providers!!</span><br/>Please input a repository url of the format (<span class='tool-tip'>https://github.com/:username/:repository</span> or <span class='tool-tip'>https://bitbucket.org/:username/:repository</span>)<br/>";
+                $this->result_content = "<span class='error'>Not a valid url for repository versioning service providers!!</span><br/>Please input a repository url of the format (<span class='tool-tip'>https://github.com/:username/:repository</span> or <span class='tool-tip'>https://bitbucket.org/:username/:repository</span>)<br/>";
 //                $this->result_content = "<span class='success'>You have successfully opened an issue </span>which can be accessed at <br/>".Html::anchor($responsejson['html_url'], $responsejson['html_url'])."<br/>";
             }
         }

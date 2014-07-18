@@ -20,7 +20,7 @@
                     <label>Username:</label>
                 </td>
                 <td>
-                    <input type="text" name="username" id="username" placeholder="debraj1990" required="true" autocomplete="off" />
+                    <input type="text" name="username" id="username" placeholder="username" required="true" autocomplete="off" />
                 </td>
             </tr>
             <tr>
