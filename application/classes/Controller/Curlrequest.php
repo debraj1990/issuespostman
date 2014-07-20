@@ -9,22 +9,13 @@ class Controller_Curlrequest extends Controller_Base {
 //    protected $result_content;
 
     public function action_content(){
-//        $this->template->styles = array(
-//            'media/css/custom.css'
-//        );
-//        echo 'pre:'.$this->result_content;
-//         $this->template->content = $this->result_content;
-//echo 'post:';print_r($this->template->file);
-//        $this->action_contentrender();
-        $view = View::factory('issue_form');
-        $view->content = $this->result_content;
-//        $this->response->body('see hello world');
-        echo $this->result_content;
+
         session_destroy();
     }
 
     function action_curlreq()
     {
+        $response = new stdClass();
         $fields_string = '';
         try
         {
@@ -57,10 +48,42 @@ class Controller_Curlrequest extends Controller_Base {
             //execute post
             $result = curl_exec($ch);
             //close connection
-            curl_close($ch);
-            $json=json_decode($result,true);
-//            echo 'result'; var_dump($result);
-            return $json;
+//            curl_close($ch);
+
+// Check if any error occurred
+            if(empty($result) && curl_errno($ch))
+            { // some kind of an error happened
+                $response->error_message = curl_error($ch);
+                curl_close($ch); // close cURL handler
+            }
+// Check if no error occurred
+            else
+            {
+                $info = curl_getinfo($ch);
+                curl_close($ch); // close cURL handler
+
+                if (empty($info['http_code'])) {
+                    $response->error_message = "No HTTP code was returned";
+                } else {
+                    // load the HTTP codes
+//        $http_codes = parse_ini_file("path/to/the/ini/file");
+                    if(($info['http_code'] < 200) || ($info['http_code'] > 299)){
+
+                        $response->error_message = "The server responded: <span class="."'error'>HTTP Status code#";
+                        $response->error_message.= $info['http_code'] . "</span> ";// . $http_codes[$info['http_code']];
+                    }
+                    else {
+                        //successful response
+                        $response->successful_message = "The server responded: <span class="."'success'>HTTP Status code#";
+                        $response->successful_message.= $info['http_code'] . "</span> ";// . $http_codes[$info['http_code']];
+                    }
+                    $response->json = json_decode($result);
+//                    var_dump($result);
+//                    var_dump($response);
+                }
+            }
+
+            return($response);
         }
         catch(Exception $e)
         {

@@ -1,36 +1,41 @@
 <?php if (!defined('SYSPATH')) exit('No direct script access allowed');
 
-class Controller_Github extends Controller_Curlrequest {
+class Controller_Misc extends Controller_Curlrequest {
     public function action_index(){
-//         echo 'Github_index';var_dump($_SESSION);
-//        if(!empty($_SESSION['userRequestData']['url_provider']) && $_SESSION['userRequestData']['url_provider'] == 'github.com'){ echo 'hi';
-            if(!empty($_SESSION['userRequestData']['url_username']) && !empty($_SESSION['userRequestData']['url_repository']))
-                $_SESSION['userRequestData']['issues_endpoint_github'] = 'https://api.github.com/repos/'.$_SESSION['userRequestData']['url_username'].'/'.$_SESSION['userRequestData']['url_repository'].'/issues';
-//            }
-//            echo 'github userRequestData:';var_dump($_SESSION);
-            Request::factory("Github/curlassignment")->execute();
-        }
+
+        if(!empty($_SESSION['userRequestData']['repourl'])){
+            $_SESSION['userRequestData']['issues_endpoint_misc'] = implode('/',$_SESSION['userRequestData']['repourl']);
+            }
+
+        Request::factory("Misc/curlassignment")->execute();
+    }
 
 
     function action_curlassignment()
     {
-        $this->service_url = $_SESSION['userRequestData']['issues_endpoint_github'];
+        $this->service_url = $_SESSION['userRequestData']['issues_endpoint_misc'];
         $this->fields = array(
             'title' => $_SESSION['userRequestData']['title'],
-            'body' => $_SESSION['userRequestData']['desc']
+            'content' => $_SESSION['userRequestData']['desc']
         );
+        $this->curl_post_datatype = 'urlparams';
         $this->user = base64_decode($_SESSION['userRequestData']['username']);
         $this->pwd = base64_decode($_SESSION['userRequestData']['password']);
-//        echo 'github service_url:';var_dump($this->service_url);
-        $responsejson = $this->action_curlreq();//Request::factory("Curlrequest/curlreq")->execute();
+
+        $responsejson = $this->action_curlreq();
 //        echo 'responseData:'; print_r($responsejson);
-        if(!empty($responsejson['message']) && !empty($responsejson['documentation_url'])){
-            $this->result_content = "<span class='error'>Your issue could not be registered!!. ".$responsejson['message']."</span><br/>For more information, refer to ".Html::anchor($responsejson['documentation_url'], $responsejson['documentation_url'])."<br/>";//<a href='".$responsejson['documentation_url']."'>".$responsejson['documentation_url']."</a>";
-        }
-        else {
-            if(!empty($responsejson['html_url'])){
-                $this->result_content = "<span class='success'>You have successfully opened an issue </span>which can be accessed at ".Html::anchor($responsejson['html_url'], $responsejson['html_url'])."<br/>";
+        if(empty($responsejson->error_message) && !empty($responsejson->successful_message)){
+            $responseText = "<span class='success'>You have successfully opened an issue. </span><br/>".$responsejson->successful_message;
+            if(!empty($responsejson->json->resource_uri) && !empty($responsejson->json->local_id)){
+                $responseText.= "<br/>Issue can be accessed at ".Html::anchor('https://bitbucket.org/debraj1990/issuespostman/issue/'.$responsejson->json->local_id, 'https://bitbucket.org/debraj1990/issuespostman/issue/'.$responsejson->json->local_id)."<br/>";
             }
+            $this->result_content = $responseText;
+        }
+        elseif(!empty($responsejson->error_message) && empty($responsejson->successful_message)){
+            //error condition
+            $responseText = "<span class='error'>Your issue could not be registered!!. </span><br/>".$responsejson->error_message;
+
+            $this->result_content = $responseText;
         }
         if(!empty($this->result_content)){
             $this->action_content();

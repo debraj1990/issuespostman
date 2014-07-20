@@ -41,8 +41,8 @@ body {
 }
 
 .generateButton{
-    color: darkred;
-    background-color: #D2E9F1;/*dodgerblue;*/
+    /*color: darkred;*/
+    /*background-color: #D2E9F1;*//*dodgerblue;*/
     text-align: center;
 }
 
@@ -109,4 +109,14 @@ body {
     text-decoration-color: #ff0000;
     color: dimgrey;
     font-size: small;
+}
+.app_name{
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 25px;
+    font-weight: bold;
+    color: #1e57a4;
+}
+#resultarea{
+    /*padding-bottom: 1%;*/
+    background-color: #f2f2f2;
 }

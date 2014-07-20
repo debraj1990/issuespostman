@@ -4,30 +4,11 @@ class Controller_Base extends Controller_Template
 {
 //    protected $auth;
 //    protected $user;
-    protected $result_content;
+    public $result_content;
 
     public $auto_render = TRUE; 
     public $template = 'template';
-	
-//    // Jquery Version
-//    protected $jqversion = '1.5.1';
-//
-//    // ExtJS Version
-//    protected $extversion = '3.3.2';
-//
-//    public function __construct(Request $request)
-//    {
-//	if (Request::$is_ajax)
-//	{
-//	    $this->profiler = NULL;
-//	    $this->auto_render = FALSE;
-//	}
-//
-//	$this->session = Session::instance();
-//
-//	parent::__construct($request);
-//    }
-    
+
     
     public function before()
     {
@@ -39,9 +20,10 @@ class Controller_Base extends Controller_Template
 
 	if ($this->auto_render)
 	{
-//	    $this->template->extversion = $this->extversion;
-	    $this->template->title = 'IssuesPostman - Post issues to GitHub & BitBucket repositories';
-	    $this->template->content = '';
+        // Make $result_content available to all views
+        View::bind_global('result_content', $this->result_content);
+//	    $this->template->title = 'IssuesPostman - Post issues to GitHub & BitBucket repositories';
+//	    $this->template->content = '';
 	    $this->template->styles = array();
 	    $this->template->scripts = array();
 //        echo 'value in result_content before::'; var_dump($this->template->content);
@@ -65,6 +47,8 @@ class Controller_Base extends Controller_Template
 
 	    $this->template->styles = array_merge($styles, $this->template->styles);
 	    $this->template->scripts = array_merge($scripts, $this->template->scripts);
+        $this->template->title = 'IssuesPostman - Post issues to GitHub & BitBucket repositories';
+//        $this->template->content = $this->result_content;
 
 //        $this->template->content = $this->result_content = 'something';
 //var_dump($this->result_content);

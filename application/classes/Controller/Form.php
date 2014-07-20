@@ -34,7 +34,6 @@ class Controller_Form extends Controller_Base
             }
             else{
                 $this->result_content = "<span class='error'>Not a valid url for repository versioning service providers!!</span><br/>Please input a repository url of the format (<span class='tool-tip'>https://github.com/:username/:repository</span> or <span class='tool-tip'>https://bitbucket.org/:username/:repository</span>)<br/>";
-//                $this->result_content = "<span class='success'>You have successfully opened an issue </span>which can be accessed at <br/>".Html::anchor($responsejson['html_url'], $responsejson['html_url'])."<br/>";
             }
         }
     }
